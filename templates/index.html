@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tale.AI - Interactive Story Generator</title>
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            text-align: center;
+            background: linear-gradient(to right, #19066e, #fad0c4);
+            color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 50px auto;
+            padding: 25px;
+            background: #2c2c2c;
+            border-radius: 12px;
+            box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2);
+        }
+        h2 {
+            font-size: 24px;
+            color: #ffcc00;
+        }
+        textarea, select, button {
+            width: 100%;
+            margin: 12px 0;
+            padding: 12px;
+            border-radius: 6px;
+            font-size: 16px;
+            border: none;
+            outline: none;
+        }
+        textarea {
+            height: 100px;
+            resize: none;
+            background: #3b3b3b;
+            color: white;
+        }
+        select {
+            background: #3b3b3b;
+            color: white;
+        }
+        button {
+            cursor: pointer;
+            background: #ffeb3b ;
+            color: rgb(13, 13, 13);
+            font-weight: bold;
+            transition: all 0.3s ease;
+            width: 175px;
+        }
+        button:hover {
+            background: lightsalmon;
+            transform: scale(1.05);
+        }
+        #storyOutput, #titleOutput, #conclusionOutput {
+            margin-top: 15px;
+            padding: 10px;
+            background: #444;
+            border-radius: 6px;
+            font-size: 15px;
+            font-style: normal;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Welcome to Tale.AI! 📖✨</h2>
+        
+        <textarea id="prompt" placeholder="Enter your story idea..."></textarea>
+        
+        <h3>Select Genre:</h3>
+        <select id="genre">
+            <option>Fantasy</option>
+            <option>Mystery</option>
+            <option>Sci-Fi</option>
+            <option>Adventure</option>
+            <option>Horror</option>
+            <option>Historical Fiction</option>
+            <option>Romance</option>
+            <option>Thriller</option>
+            <option>Comedy</option>
+            <option>Mythology</option>
+        </select>
+
+        <h3>Select Writing Style:</h3>
+        <select id="style">
+            <option>Descriptive</option>
+            <option>Action-Packed</option>
+            <option>Dialogue-Heavy</option>
+            <option>Poetic</option>
+            <option>First-Person Narrative</option>
+            <option>Third-Person Omniscient</option>
+            <option>Minimalist</option>
+            <option>Epistolary (Letter-Based)</option>
+            <option>Gothic</option>
+            <option>Satirical</option>
+        </select>
+
+        <h3>Select Writing Intent:</h3>
+        <select id="intent">
+            <option>Idea Generation</option>
+            <option>Creative Writing</option>
+            <option>Character Development</option>
+            <option>World-Building</option>
+            <option>Dialogue Practice</option>
+            <option>Screenwriting</option>
+            <option>Poetry Creation</option>
+            <option>Story Ending Prediction</option>
+            <option>Alternate Storyline</option>
+            <option>Children's Story</option>
+        </select>
+
+        <h3>Select Story Length:</h3>
+        <select id="length">
+            <option>Short</option>
+            <option>Medium</option>
+            <option>Long</option>
+        </select>
+
+        <button onclick="generateStory()">Generate Story</button>
+        <button onclick="regenerateStory()">Regenerate Story</button>
+        <button onclick="continueStory()">Continue Story</button>
+        <button onclick="suggestTitle()">Suggest Title</button>
+        <button onclick="concludeStory()">Conclude Story</button>
+        <button onclick="listenToStory()">Listen to Story</button>
+        
+        <h3 id="titleOutput"></h3>
+        <p id="storyOutput"></p>
+        <h3 id="conclusionOutput"></h3>
+
+        <audio id="storyAudio" style="display: none;"></audio>
+    </div>
+
+    <script>
+        let audio = document.getElementById("storyAudio");
+
+        function generateStory() {
+            let data = {
+                prompt: document.getElementById("prompt").value,
+                genre: document.getElementById("genre").value,
+                style: document.getElementById("style").value,
+                intent: document.getElementById("intent").value,
+                length: document.getElementById("length").value
+            };
+            fetch("/generate", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(data)
+            })
+            .then(res => res.json())
+            .then(data => document.getElementById("storyOutput").innerText = data.story);
+        }
+
+        function regenerateStory() {
+            generateStory();
+        }
+
+        function continueStory() {
+            fetch("/continue_story", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ story: document.getElementById("storyOutput").innerText, length: document.getElementById("length").value })
+            })
+            .then(res => res.json())
+            .then(data => {
+                document.getElementById("storyOutput").innerText += "\n\n" + data.new_story;
+            });
+        }
+
+        function suggestTitle() {
+            fetch("/suggest_title", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ story: document.getElementById("storyOutput").innerText })
+            })
+            .then(res => res.json())
+            .then(data => document.getElementById("titleOutput").innerText = "Title: " + data.title);
+        }
+
+        function concludeStory() {
+            fetch("/conclude_story", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ story: document.getElementById("storyOutput").innerText })
+            })
+            .then(res => res.json())
+            .then(data => document.getElementById("conclusionOutput").innerText = "Conclusion: " + data.conclusion);
+        }
+
+        function listenToStory() {
+            fetch("/listen", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ story: document.getElementById("storyOutput").innerText })
+            })
+            .then(res => res.json())
+            .then(data => {
+                audio.src = data.audio_url;
+                audio.style.display = "block";
+                audio.play();
+            });
+        }
+    </script>
+</body>
+</html>
