@@ -127,6 +127,11 @@
         <button onclick="suggestTitle()">Suggest Title</button>
         <button onclick="concludeStory()">Conclude Story</button>
         <button onclick="listenToStory()">Listen to Story</button>
+        <button onclick="copyStory()">Copy Story</button>
+        <p id="copyMessage" style="color: #ffcc00; font-size: 14px; display: none;">Copied to clipboard!</p>
+        <button onclick="visualizeStory()">Visualize</button>
+        <img id="storyImage" style="max-width: 100%; margin-top: 15px; display: none;" />
+
         
         <h3 id="titleOutput"></h3>
         <p id="storyOutput"></p>
@@ -204,6 +209,48 @@
                 audio.play();
             });
         }
+
+        function copyStory() {
+    let storyText = document.getElementById("storyOutput").innerText;
+
+    if (!storyText.trim()) {
+        alert("No story to copy!");
+        return;
+    }
+
+    navigator.clipboard.writeText(storyText)
+        .then(() => {
+            let message = document.getElementById("copyMessage");
+            message.style.display = "block";
+            setTimeout(() => {
+                message.style.display = "none";
+            }, 2000);
+        })
+        .catch(err => console.error("Error copying text: ", err));
+}
+
+function visualizeStory() {
+    let storyText = document.getElementById("storyOutput").innerText;
+
+    if (!storyText.trim()) {
+        alert("No story to visualize!");
+        return;
+    }
+
+    fetch("/generate_image", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ story: storyText })
+    })
+    .then(res => res.json())
+    .then(data => {
+        let imgElement = document.getElementById("storyImage");
+        imgElement.src = data.image_url;
+        imgElement.style.display = "block";
+    })
+    .catch(err => console.error("Error generating image: ", err));
+}
+
     </script>
 </body>
 </html>
