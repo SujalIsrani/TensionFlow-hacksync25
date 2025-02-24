@@ -121,6 +121,16 @@
             <option>Long</option>
         </select>
 
+        <h3>Select Language:</h3>
+        <select id="language">
+        <option value="english">English</option>
+        <option value="hindi">Hindi</option>
+        <option value="spanish">Spanish</option>
+        <option value="italian">Italian</option>
+        <option value="marathi">Marathi</option>
+        </select>
+
+
         <button onclick="generateStory()">Generate Story</button>
         <button onclick="regenerateStory()">Regenerate Story</button>
         <button onclick="continueStory()">Continue Story</button>
@@ -149,7 +159,8 @@
                 genre: document.getElementById("genre").value,
                 style: document.getElementById("style").value,
                 intent: document.getElementById("intent").value,
-                length: document.getElementById("length").value
+                length: document.getElementById("length").value,
+                language: document.getElementById("language").value
             };
             fetch("/generate", {
                 method: "POST",
