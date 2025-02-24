@@ -15,9 +15,9 @@ genai.configure(api_key=API_KEY)
 model = genai.GenerativeModel("gemini-1.5-flash")
 
 # Function to generate a short story segment
-def generate_story(prompt, genre, style, intent, length):
+def generate_story(prompt, genre, style, intent, length, language):
     system_prompt = (
-        f"Write a {genre.lower()} story in {style.lower()} style for {intent.lower()} purposes. "
+        f"Write a {genre.lower()} story in {style.lower()} style and {language.lower()} for {intent.lower()} purposes. "
         "Keep it immersive but generate only a small paragraph."
     )
     max_tokens = {"Short": 100, "Medium": 200, "Long": 300}.get(length, 100)
@@ -69,9 +69,10 @@ def generate():
     genre = data.get("genre", "Fantasy")
     style = data.get("style", "Descriptive")
     intent = data.get("intent", "Idea Generation")
-    length = data.get("length", "Short") 
+    length = data.get("length", "Short")
+    language = data.get("language","English") 
 
-    story = generate_story(prompt, genre, style, intent, length)
+    story = generate_story(prompt, genre, style, intent, length, language)
     return jsonify({"story": story})
 
 @app.route('/continue_story', methods=['POST'])
