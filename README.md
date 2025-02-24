@@ -1,5 +1,3 @@
-# TensionFlow-hacksync25
-
 # **Tale.AI - Interactive Story Generator**  
 
 ## **Overview**  
