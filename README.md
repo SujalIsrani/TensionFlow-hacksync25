@@ -70,10 +70,3 @@ python app.py
 
 ## **Contributing**  
 Feel free to fork the project and submit a pull request.  
-
-## **License**  
-This project is under the **MIT License**.  
-
----
-
-This README now accurately reflects the use of **Gemini** for text generation. Let me know if you need any further tweaks! 🚀
