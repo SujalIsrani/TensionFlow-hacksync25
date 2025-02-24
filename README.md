@@ -1,13 +1,9 @@
 # TensionFlow-hacksync25
 
-Got it! Since you're using **Gemini** instead of OpenAI, I'll update the README accordingly. Here’s your updated README:  
-
----
-
 # **Tale.AI - Interactive Story Generator**  
 
 ## **Overview**  
-Tale.AI is an AI-powered storytelling companion designed for writers. It generates interactive stories based on user inputs such as genre, writing style, intent, and length. Users can also regenerate, continue, conclude stories, and even listen to them.  
+Tale.AI is an AI-powered storytelling companion designed for writers. It generates interactive stories based on user inputs such as genre, writing style, intent, language and length. Users can also regenerate, continue, conclude stories, and even listen to them.  
 
 ## **Dependencies**  
 Ensure you have the following dependencies installed:  
