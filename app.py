@@ -5,6 +5,7 @@ from dotenv import load_dotenv
 import pyttsx3  # Text-to-Speech for "Listen to Story"
 
 app = Flask(__name__)
+STARRYAI_API_KEY = "RoqgI2YZcaJzv0qhvoUyympLtPZXPg"
 
 # Load API key from .env
 load_dotenv()
@@ -101,6 +102,25 @@ def listen():
     story = data.get("story", "")
     text_to_speech(story)
     return jsonify({"message": "Listening to story..."})
+
+@app.route('/generate_image', methods=['POST'])
+def generate_image():
+    data = request.json
+    story_text = data.get("story", "")
+
+    if not story_text:
+        return jsonify({"error": "Story text is required for image generation"}), 400
+
+    headers = {"Authorization": f"Bearer {STARRYAI_API_KEY}"}
+    payload = {"prompt": story_text, "style": "artistic", "resolution": "hd"}
+
+    response = request.post("https://api.starryai.com/generate", json=payload, headers=headers)
+
+    if response.status_code == 200:
+        image_url = response.json().get("image_url")
+        return jsonify({"image_url": image_url})
+    else:
+        return jsonify({"error": "Failed to generate image", "details": response.text}), 500
 
 if __name__ == '__main__':
     app.run(debug=True)
